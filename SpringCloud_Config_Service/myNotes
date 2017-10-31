@@ -1,0 +1,76 @@
+CENTRALISER LA CONFIGUARTION 
+(de l'esb des MS distribues ds un services de configuration):
+
+---------------------------------------
+1.Spring Starter Project : (2er : Service de config)
+	maven, java 8, jar
+	1.Cloud config : config server
+----------------------------------------
+exposer le MS de configuration :
+	1.SprongCloudConfigServiceApplication.java => @EnableConfigServer
+	2.application.properties : de ce service de config
+	
+		#parce queun seule instance, on peut fixer le port
+		server.port=8888     
+		
+		#ou ce trouve la confi !?
+		#d'hab on le met sur gitHub
+		#ici on va creer MyConfigCloudMS , je mcreer un fichier application.properties et je specifie les properties de tous mes MS
+	 	spring.cloud.config.git.uri=file://${user.home}/myConfigCloudMS :
+	 3.application.properties : dans le myConfigCloudMS , cad config des MS
+	 	le prot...
+	 4. cd //${user.home}/myConfigCloudMS
+	 5. git init
+	 6.git add -A .
+	 7.git commit -m "add ."
+	
+------------------------------------
+donner un nom au servce "Societe MS" :
+application.properties:
+	1.spring.application.name=societe.service
+	2.spring.cloud.config.uri=http://localhost:8888 ( je le dit : quand tu demarre cherche ta config sur le port 8888)
+	# je mettre les autres configuration dans le app.properties de myConfigCloudMS..
+	
+----------------------------------
+test
+	1.demarrer le Config Service	(sur 8888)
+	2.on rename application.properties de societeMS : bootstrap.properties, puis on le demarre
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	

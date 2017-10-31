@@ -1,0 +1,15 @@
+Enregistere MS : tous les MS doivent publier leurs :IP, ports..
+
+---------------------------------------
+1.Spring Starter Project : (3eme : Service d'enregistrement)
+	maven, java 8, jar
+	1.Cloud Discovery : Eureka server
+	2.Cloud Config : Config  client
+----------------------------------------
+1.@EnableEurekaServer sur EurekaServiceApplication.java
+2.application.properties:
+	spring.application.name=eureka-service
+	spring.cloud.config.uri=http://localhost:8001
+3.eureka-service.properties : ds myConfigCloudMS :   pour ne pas s'enregistrer lui meme
+	eureka.client.fetch-registry=false
+	eureka.client.register-with-eureka=false

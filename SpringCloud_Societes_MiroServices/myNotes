@@ -1,0 +1,110 @@
+1-comment mettre en place un microservice __ societes:
+	gerer des societes
+	le demarrer en plusieurs instances
+	generer le jar
+	consulter  les fonctionalites offertes par le MS via un client Rest
+	
+2.centraliser la cinfiguration l'ensembe des MS distribues ds un service de configuration
+3.creer un service d'enregistrement de MS, 
+	chaque MSva s'enregister: publiser ses references dans le services d'enregistrement: ip, port..
+4.creer un service Proxy
+5.faire communiquer les MS en echanger des msg via des stream basés sur le protocole AMQP , cad Rabbit MQ
+	
+--------------------------------------------
+1.Spring Starter Project : (1er : MS permet de gerer des societes)
+	maven, java 8, jar
+	1.Web : web, Rest Repository
+	2.SQL : JPA, H2(BD memoire: phase de teste)
+	3.Ops: actuator
+	4.Cloud Messaging : Stream Rabbit
+	5.Cloud Discovery :Eureka Discovery
+	6.Cloud Config : Config Client
+	
+2.je cree mes Entities : Societe 	
+3.Interface JPA : SocieteRepoqitory  avec Spring DATA
+4. je teste dans ...Application.java ==> c simple
+	j'affiche : console
+5.exposer sous forme d'un service Rest @RepositoryRestResource 
+	jaffiche : localhost:8080/societes
+	....
+6.definir des fonctionalites supplementaires :
+	definir le meths dans SoceteRepository  avec  @Query ...
+--------------------------------------------	
+Actuator  : 
+	localhost:8080/metrics ==>
+	localhost:8080/trace
+	localhost:8080/health
+	.....
+--------------------------------------------
+7.demarrer ce MS en plusieurs instaces :
+	1.l'arreter bien evidement
+	puis j teste sur la mm machine => je le demarre sur des ports !=
+	2.run as => run configuration => arguments : --server.port=82
+	3.run as => run configuration => arguments : --server.port=83
+	4.run as => run configuration => arguments : --server.port=84
+	5.run as => run configuration => arguments : --server.port=85
+	============> donc 4 instances de ce MS
+---------------------------------------------	
+Gener le jar : passer a la production :(j'ai creer un MS, je veux le deployer qlq part ds n'importe qll machine==> jar(app automnome) : regroupe toutes les fonctionalites de l'app
+	1. pom.xml : 
+		ajouter ds <proprieties> : <start-class>tn.mine...Application.java</start-class> 
+	2.maven => update project
+	3.run as => maven built : 
+		Goals : package -> run
+	4.refresh
+	5.dans target : nomMS(nom Artifact dhaharli).jar
+	6.demarrer sur ligne de cmd  :
+		1.cd  chemin/target (properties) 
+		2. java -jar nomDuJar.jar --server.port=82  (arguments...)
+		3.java -jar nomDuJar.jar --server.port=83
+		4.java -jar nomDuJar.jar --server.port=84 
+		5.java -jar nomDuJar.jar --server.port=85
+	=============> donc 4 instances de ce MS
+
+
+a ce niveau : c le client qui ce charge de gerer les instaces (localhost:82/societes -> instance sur le port 82 qui va repondre, localhost:83/societes -> instance sur le port 83 qui va repondre)   -_-'
+@@@@@@@ esoudre ce probleme (gerer ces instances  ) a deux niveaux :
+	1.centraliser la configuration
+	2.service d'enregistrement	
+	et puis creer un proxy : un seul service et toutes les requetes clients par ce Proxy
+	
+--------------------------------------------
+@RefreshScope    : 3la RestService
+	refresh properties while running: 
+	sinon : si on modifie "me" ds societe-service.properties
+	==> config service va la voir apres actualiser mais pas ce Microservice que appres  redemarrage
+	en gros :
+		1.@RefreshScope 3la lMS
+		2.lui envoyer une requete http de type post , pour lui demander de faire "Refesh" :
+			1.soit : soit avec un client rest ==> advanced rest client oour envoyer la requete http
+			2.soit ligne de commande :  "curl" :envoyer la requete http
+				curl -d {} http://localhost8002/refresh==> je lui demande de refresh==> relire toutes les proprietes du fichier de config	
+			
+			
+---------------------------------------------	
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
